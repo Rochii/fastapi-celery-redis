@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from re import M
 import traceback
 
 from celery.result import AsyncResult
-
 from fastapi import APIRouter, HTTPException, status, Path
 
 from api.schemas.operations import (
     CreateOperationsResponse,
     CreateOperationsRequest,
-    RetrieveOperationsResponse
+    RetrieveOperationsResponse,
 )
 from core.worker import create_operation_task
 from modules.logger import Logger
@@ -43,7 +41,7 @@ async def create_validation(data: CreateOperationsRequest):
     try:
         task = create_operation_task.delay(data.operation, data.text)
         logger.info(f"msg: queued new task with id {task.id} successfully")
-        return CreateOperationsResponse.parse_obj({ "id": task.id })
+        return CreateOperationsResponse.parse_obj({"id": task.id})
 
     except Exception:
         logger.critical(
@@ -78,19 +76,19 @@ async def retrieve_operation(
             f"id: {id} task_result.status: {async_result.status} type: {async_result.status}"
         )
 
-        # NOTE: 
+        # NOTE:
         #   here some checks about the status of celery worker can be added because task may not
         #   be finished and we want to return another response can be returned
 
         # get method must be called to ensure resources are released
         task_results = async_result.get()
-        
+
         return RetrieveOperationsResponse.parse_obj(
             {
                 "id": id,
                 "operation": task_results["operation"],
                 "text": task_results["text"],
-                "valid": task_results["valid"]
+                "valid": task_results["valid"],
             }
         )
 

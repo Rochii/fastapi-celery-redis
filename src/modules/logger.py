@@ -10,7 +10,9 @@ from os import getenv
 class Logger(object):
     """Class to do log."""
 
-    def __init__(self, name: str, logname: str, logpath: str = None, level=logging.DEBUG) -> None:
+    def __init__(
+        self, name: str, logname: str, logpath: str = None, level=logging.DEBUG
+    ) -> None:
         """Constructor method, sets class variables.
 
         Args:
@@ -43,9 +45,8 @@ class Logger(object):
         if not logger.handlers:
             # define format
             formatter = logging.Formatter(
-                "%(asctime)s,%(msecs)d %(levelname)s {0} {1}:%(lineno)d :%(funcName)s %(message)s".format(
-                    uuid.uuid4().hex, self._name
-                )
+                "%(asctime)s,%(msecs)d %(levelname)s {0} {1}:%(lineno)d :%(funcName)s \
+                %(message)s".format(uuid.uuid4().hex, self._name)
             )
 
             # define file handler to the specified logpath

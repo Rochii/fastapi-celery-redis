@@ -11,10 +11,12 @@ class CreateOperationsRequest(BaseModel):
     # NOTE: add more attributes here
     pass
 
+
 class CreateOperationsResponse(BaseModel):
     id: str
     # NOTE: add more attributes here
     pass
+
 
 # read validation responses
 class RetrieveOperationsResponse(BaseModel):

@@ -29,10 +29,8 @@ def create_operation_task(operation: str, text: str) -> dict:
     Returns:
         dict: Returns all information about the operation in a dictionary.
     """
-    logger.info(
-        f"data: {operation} msg: creating new operation task!"
-    )
-    
+    logger.info(f"data: {operation} msg: creating new operation task!")
+
     # NOTE: do some stuff and return results
 
-    return {"operation": operation, "text": text, "valid": 1 }
+    return {"operation": operation, "text": text, "valid": 1}
