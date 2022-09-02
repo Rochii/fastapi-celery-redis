@@ -7,13 +7,11 @@ services:
       context: .
       dockerfile: src/Dockerfile
     restart: always
+    env_file:
+      - .env
     ports:
       - 8888:8000
     command: poetry run gunicorn src.api.main:app --workers=${GUNICORN_WORKERS} --worker-class=uvicorn.workers.UvicornWorker --bind=0.0.0.0
-    environment:
-      - LOG_PATH=${LOG_PATH}
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     volumes:
       - ${LOG_PATH}:${LOG_PATH}
     depends_on:
@@ -25,11 +23,9 @@ services:
       context: .
       dockerfile: src/Dockerfile
     restart: always
+    env_file:
+      - .env
     command: poetry run celery --app=src.core.worker.celery worker
-    environment:
-      - LOG_PATH=${LOG_PATH}
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     volumes:
       - ${LOG_PATH}:${LOG_PATH}
     depends_on:

@@ -1,5 +1,5 @@
 # pull official python3.10 image
-FROM python:3.10-slim
+FROM python:3.10
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \

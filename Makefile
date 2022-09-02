@@ -42,14 +42,12 @@ check-mypy:
 check-safety:
 	$(CMD) safety check
 
-
 # Test jobs
 test:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
 
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
-
 
 # Docker jobs
 build:
