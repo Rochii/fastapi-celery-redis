@@ -46,7 +46,9 @@ class Logger(object):
             # define format
             formatter = logging.Formatter(
                 "%(asctime)s,%(msecs)d %(levelname)s {0} {1}:%(lineno)d :%(funcName)s \
-                %(message)s".format(uuid.uuid4().hex, self._name)
+                %(message)s".format(
+                    uuid.uuid4().hex, self._name
+                )
             )
 
             # define file handler to the specified logpath
