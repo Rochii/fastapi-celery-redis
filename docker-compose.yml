@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    restart: always
+    ports:
+      - 8888:8000
+    command: poetry run gunicorn src.api.main:app --workers=${GUNICORN_WORKERS} --worker-class=uvicorn.workers.UvicornWorker --bind=0.0.0.0
+    environment:
+      - LOG_PATH=${LOG_PATH}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    volumes:
+      - ${LOG_PATH}:${LOG_PATH}
+    depends_on:
+      - redis
+
+  core:
+    container_name: core
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    restart: always
+    command: poetry run celery --app=src.core.worker.celery worker
+    environment:
+      - LOG_PATH=${LOG_PATH}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    volumes:
+      - ${LOG_PATH}:${LOG_PATH}
+    depends_on:
+      - api
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+    restart: always
+    command: redis-server --save 60 10 --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
