@@ -3,11 +3,9 @@
 
 from fastapi import FastAPI, status
 from fastapi.exceptions import RequestValidationError
-
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-
 
 HTTP_STATUS_CODE_TO_DETAIL = {
     status.HTTP_401_UNAUTHORIZED: "Unauthorized",

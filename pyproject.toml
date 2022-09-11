@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-celery-redis"
-version = "0.1.0"
+version = "0.0.0"
 description = "FastAPI with Celery and Redis for Python projects"
 authors = ["Rochii <truchero.roger@gmail.com>"]
 maintainers = ["Rochii <truchero.roger@gmail.com>"]
@@ -18,9 +18,8 @@ gunicorn = "^20.1.0"
 pydantic = "^1.9.2"
 celery = "^5.2.7"
 redis = "^4.3.4"
-flower = "^1.2.0"
 fastapi = "^0.81.0"
-mypy = "^0.971"
+isort = "^5.10.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
@@ -29,6 +28,7 @@ bandit = "^1.7.4"
 flake8 = "^5.0.4"
 black = "^22.6.0"
 safety = "^2.1.1"
+mypy = "^0.971"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

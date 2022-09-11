@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from os import getenv
+
 from celery import Celery
 
 from modules.logger import Logger
-
 
 # instantiate logger
 logger = Logger(__name__, "worker.log").get_logger()

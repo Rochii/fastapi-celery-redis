@@ -6,7 +6,6 @@ from fastapi import APIRouter
 from api.config import ROUTE_PREFIX_V1
 from api.routers import operations
 
-
 router = APIRouter()
 
 # include to router all api REST routes with version prefix

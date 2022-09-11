@@ -4,16 +4,15 @@
 import traceback
 
 from celery.result import AsyncResult
-from fastapi import APIRouter, HTTPException, status, Path
+from fastapi import APIRouter, HTTPException, Path, status
 
 from api.schemas.operations import (
-    CreateOperationsResponse,
     CreateOperationsRequest,
+    CreateOperationsResponse,
     RetrieveOperationsResponse,
 )
 from core.worker import create_operation_task
 from modules.logger import Logger
-
 
 # instantiate logger
 logger = Logger(__name__, "api.log").get_logger()

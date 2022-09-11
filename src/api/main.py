@@ -4,9 +4,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers.handlers.exceptions import add_exception_handlers
 from api.routers import api
-
+from api.routers.handlers.exceptions import add_exception_handlers
 
 # create FastAPI object
 app = FastAPI()

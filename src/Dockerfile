@@ -16,6 +16,7 @@ WORKDIR /usr/src/app
 # install application requirements and code
 COPY poetry.lock pyproject.toml ./
 COPY src/ src/
+COPY tests/ tests/
 
 # project initialization
 RUN poetry config virtualenvs.create false && \

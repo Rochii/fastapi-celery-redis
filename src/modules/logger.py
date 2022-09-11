@@ -3,7 +3,6 @@
 
 import logging
 import uuid
-
 from os import getenv
 
 

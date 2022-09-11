@@ -1,10 +1,12 @@
 .PHONY: help \
-		check-bandit check-black check-flake8 check-mypy check-safety \
-	    test test-cov \
-	    build clean up
+		format format-isort format-black \
+		lint lint-flake8 lint-mypy lint-bandit lint-safety \
+		test test-unitary test-functional test-integration \
+		start build clean up
 
-CMD:=poetry run
+POETRY_CMD:=poetry run
 DOCKER_COMPOSE_CMD=sudo docker-compose -f docker-compose.yml
+DOCKER_CMD=sudo docker exec api
 PYMODULE:=src
 TESTS:=tests
 
@@ -12,44 +14,71 @@ TESTS:=tests
 help:
 	@echo "Please use 'make <target>', where <target> is one of"
 	@echo ""
-	@echo "  check-bandit	run lint to detect security issues in python code"
-	@echo "  check-black	run python code formatter"
-	@echo "  check-flake8	run lint to check codying style (PEP8)"
-	@echo "  check-mypy		run lint to check python code types"
-	@echo "  check-safety	run lint to detect python dependencies vulnerabilities"
-	@echo "  test			"
-	@echo "  test-cov		"
-	@echo "  build     		build docker compose images"
-	@echo "  clean        	remove docker compose container images and networks"
-	@echo "  up        		start docker compose images in detached mode"
+	@echo "  format             run all code formatters (isort, black)"
+	@echo "  format-isort       run python import for library sorting"
+	@echo "  format-black       run python code formatter according PEP8"
+	@echo "  lint               run all linters (flake8, mypy, bandit, safety)"
+	@echo "  lint-flake8        run linter to check coying style according PEP8"
+	@echo "  lint-mypy          run linter to check python code types"
+	@echo "  lint-bandit        run linter to detect security issues in python code"
+	@echo "  lint-safety        run linter to detect python dependency vulnerabilities"
+	@echo "  test               run all tests (unitary, functional, integration)"
+	@echo "  test-unitary       run unitary testing inside the container"
+	@echo "  test-functional    run functional testing inside the container"
+	@echo "  test-integration   run integration testing inside the container"
+	@echo "  start              build, clean and up docker containers"
+	@echo "  build              build docker container images"
+	@echo "  clean              remove docker containers and networks" 
+	@echo "  up                 start docker containers in detached mode"
 	@echo ""
 	@echo "Check the Makefile to know exactly what each target is doing."
 	@echo "Most actions are configured in 'pyproject.toml'."
 
-# Quality jobs
-check-bandit:
-	$(CMD) bandit $(PYMODULE) $(TESTS)
 
-check-black:
-	$(CMD) black $(PYMODULE) $(TESTS)
 
-check-flake8:
-	$(CMD) flake8 $(PYMODULE) $(TESTS)
+# Formatter jobs
+format:
+	$(MAKE) format-isort format-black
 
-check-mypy:
-	$(CMD) mypy $(PYMODULE) $(TESTS)
+format-isort:
+	$(POETRY_CMD) isort $(PYMODULE) $(TESTS)
 
-check-safety:
-	$(CMD) safety check
+format-black:
+	$(POETRY_CMD) black $(PYMODULE) $(TESTS)
+
+# Linter jobs
+lint:
+	$(MAKE) lint-flake8 lint-mypy lint-bandit lint-safety
+
+lint-flake8:
+	$(POETRY_CMD) flake8 $(PYMODULE) $(TESTS)
+
+lint-mypy:
+	$(POETRY_CMD) mypy $(PYMODULE) $(TESTS)
+
+lint-bandit:
+	$(POETRY_CMD) bandit $(PYMODULE) $(TESTS)
+
+lint-safety:
+	$(POETRY_CMD) safety check
 
 # Test jobs
 test:
-	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
+	$(MAKE) test-unitary test-functional test-integration
 
-test-cov:
-	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
+test-unitary:
+	$(DOCKER_CMD) $(POETRY_CMD) pytest --cov=$(PYMODULE) $(TESTS)/unitary
+
+test-functional:
+	$(DOCKER_CMD) $(POETRY_CMD) pytest $(TESTS)/functional
+
+test-integration:
+	$(DOCKER_CMD) $(POETRY_CMD) pytest $(TESTS)/integration
 
 # Docker jobs
+start:
+	$(MAKE) build clean up
+
 build:
 	$(DOCKER_COMPOSE_CMD) build
 
