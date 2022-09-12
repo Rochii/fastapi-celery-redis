@@ -5,23 +5,21 @@ from pydantic import BaseModel
 
 
 # create validation responses
-class CreateOperationsRequest(BaseModel):
-    operation: str
+class CreateValidationRequest(BaseModel):
     text: str
     # NOTE: add more attributes here
     pass
 
 
-class CreateOperationsResponse(BaseModel):
+class CreateValidationResponse(BaseModel):
     id: str
     # NOTE: add more attributes here
     pass
 
 
 # read validation responses
-class RetrieveOperationsResponse(BaseModel):
+class RetrieveValidationResponse(BaseModel):
     id: str
-    operation: str
     text: str
     valid: int
     # NOTE: add more attributes here

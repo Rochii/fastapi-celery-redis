@@ -18,19 +18,18 @@ celery = Celery(
 )
 
 
-@celery.task(track_started=True, name="create_operation_task")
-def create_operation_task(operation: str, text: str) -> dict:
-    """Create a new operation task.
+@celery.task(track_started=True, name="create_validation_task")
+def create_validation_task(text: str) -> dict:
+    """Create a new validation task.
 
     Args:
-        operation (str): Operation to perform.
         text (str): Text to analyze.
 
     Returns:
-        dict: Returns all information about the operation in a dictionary.
+        dict: Returns all information about the validation in a dictionary.
     """
-    logger.info(f"data: {operation} msg: creating new operation task!")
+    logger.info(f"text: {text} msg: creating new validation task!")
 
     # NOTE: do some stuff and return results
 
-    return {"operation": operation, "text": text, "valid": 1}
+    return {"text": text, "valid": 1}

@@ -6,41 +6,41 @@ import traceback
 from celery.result import AsyncResult
 from fastapi import APIRouter, HTTPException, Path, status
 
-from api.schemas.operations import (
-    CreateOperationsRequest,
-    CreateOperationsResponse,
-    RetrieveOperationsResponse,
+from api.schemas.validations import (
+    CreateValidationRequest,
+    CreateValidationResponse,
+    RetrieveValidationResponse,
 )
-from core.worker import create_operation_task
+from core.worker import create_validation_task
 from modules.logger import Logger
 
 # instantiate logger
 logger = Logger(__name__, "api.log").get_logger()
 
-# APIRouter creates path operations for validation model
+# APIRouter creates path validations for validation model
 router = APIRouter(
-    prefix="/operations",
-    tags=["operations"],
+    prefix="/validation",
+    tags=["validation"],
     # NOTE: we can add dependencies here, i.e: oauth2 api authentication
     # dependencies=[Depends(...)]
 )
 
 
-# POST /v{major_version}/operations
-@router.post("", response_model=CreateOperationsResponse)
-async def create_validation(data: CreateOperationsRequest):
-    """Create new operation.
+# POST /v{major_version}/validations
+@router.post("", response_model=CreateValidationResponse)
+async def create_validation(data: CreateValidationRequest):
+    """Create new validation.
 
     Args:
-        data (CreateOperationRequest): Pydantic input validation model.
+        data (CreateValidationRequest): Pydantic input validation model.
 
     Returns:
-        CreateOperationResponse: Pydantic response validation model.
+        ValidationResponse: Pydantic response validation model.
     """
     try:
-        task = create_operation_task.delay(data.operation, data.text)
+        task = create_validation_task.delay(data.text)
         logger.info(f"msg: queued new task with id {task.id} successfully")
-        return CreateOperationsResponse.parse_obj({"id": task.id})
+        return CreateValidationResponse.parse_obj({"id": task.id})
 
     except Exception:
         logger.critical(
@@ -49,21 +49,21 @@ async def create_validation(data: CreateOperationsRequest):
         return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
-# GET /v{major_version}/operations/{id}
+# GET /v{major_version}/validations/{id}
 @router.get("/{id}")
-async def retrieve_operation(
+async def retrieve_validation(
     id: str = Path(
         default=...,
         regex=r"^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$",
     )
 ):
-    """Retrieve operation results for an specific id.
+    """Retrieve validation results for an specific id.
 
     Args:
         id (str): Validation identifier.
 
     Returns:
-        RetrieveOperationsResponse: Pydantic processed response operation model.
+        RetrieveValidationResponse: Pydantic processed response validation model.
     """
     try:
         async_result = AsyncResult(id)
@@ -82,10 +82,9 @@ async def retrieve_operation(
         # get method must be called to ensure resources are released
         task_results = async_result.get()
 
-        return RetrieveOperationsResponse.parse_obj(
+        return RetrieveValidationResponse.parse_obj(
             {
                 "id": id,
-                "operation": task_results["operation"],
                 "text": task_results["text"],
                 "valid": task_results["valid"],
             }

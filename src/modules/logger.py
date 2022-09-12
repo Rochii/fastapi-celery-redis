@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 import logging
+import os
 import uuid
-from os import getenv
 
 
 class Logger(object):
@@ -22,7 +23,7 @@ class Logger(object):
         """
         self._name = name
         self._logname = logname
-        self._logpath = logpath if logpath is not None else getenv("LOG_PATH")
+        self._logpath = logpath if logpath is not None else os.getenv("LOG_PATH")
         self._level = level
 
     def get_logger(self) -> object:
@@ -38,7 +39,7 @@ class Logger(object):
         """
         # get logger for 'name'
         logger = logging.getLogger(self._name)
-        logpath = self._logpath + self._logname
+        logpath = os.path.join(self._logpath, self._logname)
 
         # avoid defining multiple handlers that will causes in duplicate logs
         if not logger.handlers:

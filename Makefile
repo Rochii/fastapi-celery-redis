@@ -1,6 +1,6 @@
 .PHONY: help \
 		format format-isort format-black \
-		lint lint-flake8 lint-mypy lint-bandit lint-safety \
+		lint lint-flake8 lint-bandit lint-safety \
 		test test-unitary test-functional test-integration \
 		start build clean up
 
@@ -17,9 +17,8 @@ help:
 	@echo "  format             run all code formatters (isort, black)"
 	@echo "  format-isort       run python import for library sorting"
 	@echo "  format-black       run python code formatter according PEP8"
-	@echo "  lint               run all linters (flake8, mypy, bandit, safety)"
+	@echo "  lint               run all linters (flake8, bandit, safety)"
 	@echo "  lint-flake8        run linter to check coying style according PEP8"
-	@echo "  lint-mypy          run linter to check python code types"
 	@echo "  lint-bandit        run linter to detect security issues in python code"
 	@echo "  lint-safety        run linter to detect python dependency vulnerabilities"
 	@echo "  test               run all tests (unitary, functional, integration)"
@@ -52,9 +51,6 @@ lint:
 
 lint-flake8:
 	$(POETRY_CMD) flake8 $(PYMODULE) $(TESTS)
-
-lint-mypy:
-	$(POETRY_CMD) mypy $(PYMODULE) $(TESTS)
 
 lint-bandit:
 	$(POETRY_CMD) bandit $(PYMODULE) $(TESTS)
