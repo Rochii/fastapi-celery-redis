@@ -111,11 +111,18 @@ To get a local copy up and running follow these simple example steps.
    ```sh
    poetry install
    ```
-5. Build docker images
+5. Create the **.env** file in project root directory as shown in **.env.example**:
+   ```sh
+   LOG_PATH=<localpath_to_store_logs>
+   GUNICORN_WORKERS=<number_of_gunicorn_workers>
+   CELERY_BROKER_URL=<redis_broker_url>
+   CELERY_RESULT_BACKEND=<redis_backend_url>
+   ```
+6. Build docker images
    ```sh
    make build
    ```
-6. Up docker images:
+7. Up docker images:
    ```sh
    make up
    ```
