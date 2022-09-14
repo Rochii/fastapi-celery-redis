@@ -8,13 +8,11 @@ from pydantic import BaseModel
 class CreateValidationRequest(BaseModel):
     text: str
     # NOTE: add more attributes here
-    pass
 
 
 class CreateValidationResponse(BaseModel):
     id: str
     # NOTE: add more attributes here
-    pass
 
 
 # read validation responses
@@ -23,4 +21,3 @@ class RetrieveValidationResponse(BaseModel):
     text: str
     valid: int
     # NOTE: add more attributes here
-    pass

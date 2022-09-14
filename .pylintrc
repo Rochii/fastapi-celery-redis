@@ -1,0 +1,11 @@
+[MESSAGES CONTROL]
+disable=too-few-public-methods,
+        logging-fstring-interpolation,
+        fixme,
+        missing-module-docstring,
+        missing-class-docstring,
+        line-too-long,
+        broad-except,
+        no-name-in-module,
+        too-many-return-statements,
+        too-many-branches

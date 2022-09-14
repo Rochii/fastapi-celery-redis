@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import logging
 import os
 import uuid
+from os import getenv
 
 
-class Logger(object):
+class Logger:
     """Class to do log."""
 
-    def __init__(
-        self, name: str, logname: str, logpath: str = None, level=logging.DEBUG
-    ) -> None:
-        """Constructor method, sets class variables.
+    def __init__(self, name: str, logname: str, logpath: str = None, level=logging.DEBUG) -> None:
+        """Object constructor.
 
         Args:
             name (str): Logger name.
@@ -23,7 +21,7 @@ class Logger(object):
         """
         self._name = name
         self._logname = logname
-        self._logpath = logpath if logpath is not None else os.getenv("LOG_PATH")
+        self._logpath = logpath if logpath is not None else getenv("LOGS_PATH", "default_path")
         self._level = level
 
     def get_logger(self) -> object:
@@ -45,10 +43,8 @@ class Logger(object):
         if not logger.handlers:
             # define format
             formatter = logging.Formatter(
-                "%(asctime)s,%(msecs)d %(levelname)s {0} {1}:%(lineno)d :%(funcName)s \
-                %(message)s".format(
-                    uuid.uuid4().hex, self._name
-                )
+                f"%(asctime)s,%(msecs)d %(levelname)s {uuid.uuid4().hex} "
+                f"{self._name}:%(lineno)d :%(funcName)s %(message)s"
             )
 
             # define file handler to the specified logpath

@@ -1,8 +1,8 @@
 .PHONY: help \
 		format format-isort format-black \
-		lint lint-flake8 lint-bandit lint-safety \
+		lint lint-flake8 lint-pylint lint-bandit lint-safety \
 		test test-unitary test-functional test-integration \
-		start build clean up
+		build clean up
 
 POETRY_CMD:=poetry run
 DOCKER_COMPOSE_CMD=sudo docker-compose -f docker-compose.yml
@@ -17,22 +17,21 @@ help:
 	@echo "  format             run all code formatters (isort, black)"
 	@echo "  format-isort       run python import for library sorting"
 	@echo "  format-black       run python code formatter according PEP8"
-	@echo "  lint               run all linters (flake8, bandit, safety)"
+	@echo "  lint               run all linters (flake8, pylint, bandit, safety)"
 	@echo "  lint-flake8        run linter to check coying style according PEP8"
+	@echo "  lint-pylint        run lint to check code quality"
 	@echo "  lint-bandit        run linter to detect security issues in python code"
 	@echo "  lint-safety        run linter to detect python dependency vulnerabilities"
 	@echo "  test               run all tests (unitary, functional, integration)"
 	@echo "  test-unitary       run unitary testing inside the container"
 	@echo "  test-functional    run functional testing inside the container"
 	@echo "  test-integration   run integration testing inside the container"
-	@echo "  start              build, clean and up docker containers"
 	@echo "  build              build docker container images"
 	@echo "  clean              remove docker containers and networks" 
 	@echo "  up                 start docker containers in detached mode"
 	@echo ""
 	@echo "Check the Makefile to know exactly what each target is doing."
 	@echo "Most actions are configured in 'pyproject.toml'."
-
 
 
 # Formatter jobs
@@ -45,18 +44,23 @@ format-isort:
 format-black:
 	$(POETRY_CMD) black $(PYMODULE) $(TESTS)
 
+
 # Linter jobs
 lint:
-	$(MAKE) lint-flake8 lint-mypy lint-bandit lint-safety
+	$(MAKE) lint-flake8 lint-pylint lint-bandit lint-safety
 
 lint-flake8:
 	$(POETRY_CMD) flake8 $(PYMODULE) $(TESTS)
+
+lint-pylint:
+	$(POETRY_CMD) pylint $(PYMODULE) $(TESTS)
 
 lint-bandit:
 	$(POETRY_CMD) bandit $(PYMODULE) $(TESTS)
 
 lint-safety:
 	$(POETRY_CMD) safety check
+
 
 # Test jobs
 test:
@@ -72,9 +76,6 @@ test-integration:
 	$(DOCKER_CMD) $(POETRY_CMD) pytest $(TESTS)/integration
 
 # Docker jobs
-start:
-	$(MAKE) build clean up
-
 build:
 	$(DOCKER_COMPOSE_CMD) build
 

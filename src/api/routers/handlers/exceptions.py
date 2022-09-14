@@ -19,29 +19,31 @@ HTTP_STATUS_CODE_TO_DETAIL = {
 
 
 def add_exception_handlers(app: FastAPI) -> None:
+    """Add all exception handler to the app instance.
+
+    Args:
+        app (FastAPI): FastAPI app instance.
+    """
+
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(
-        _: Request, exc: RequestValidationError
-    ) -> JSONResponse:
+    async def validation_exception_handler(_: Request, __: RequestValidationError) -> JSONResponse:
         """Customize Pydantic validation exceptions.
 
         Args:
             _ (Request): API request object.
-            exc (RequestValidationError): Pydantic RequestValidationError exception raised.
+            __ (RequestValidationError): Pydantic RequestValidationError exception raised.
 
         Returns:
             JSONResponse: API JSON response.
         """
         return JSONResponse(
-            # NOTE: add more information about the error if needed
+            # TODO: add more information about the error?
             content={"detail": "Invalid content"},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     @app.exception_handler(StarletteHTTPException)
-    async def http_exception_handler(
-        request: Request, exc: StarletteHTTPException
-    ) -> JSONResponse:
+    async def http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
         """Customize response when HTTPException raised.
 
         Args:

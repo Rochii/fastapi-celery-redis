@@ -49,18 +49,18 @@ async def create_validation(data: CreateValidationRequest):
         return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
-# GET /v{major_version}/validations/{id}
-@router.get("/{id}")
+# GET /v{major_version}/validations/{task_id}
+@router.get("/{task_id}")
 async def retrieve_validation(
-    id: str = Path(
+    task_id: str = Path(
         default=...,
         regex=r"^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$",
     )
 ):
-    """Retrieve validation results for an specific id.
+    """Retrieve validation results for an specific task id.
 
     Args:
-        id (str): Validation identifier.
+        task_id (str): Validation identifier.
 
     Returns:
         RetrieveValidationResponse: Pydantic processed response validation model.
@@ -68,11 +68,11 @@ async def retrieve_validation(
     try:
         async_result = AsyncResult(id)
         if not isinstance(async_result, AsyncResult):
-            logger.error(f"id: {id} msg: task id not found -> {async_result}")
+            logger.error(f"id: {task_id} msg: task id not found -> {async_result}")
             return HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
         logger.info(
-            f"id: {id} task_result.status: {async_result.status} type: {async_result.status}"
+            f"id: {task_id} task_result.status: {async_result.status} type: {async_result.status}"
         )
 
         # NOTE:
@@ -84,7 +84,7 @@ async def retrieve_validation(
 
         return RetrieveValidationResponse.parse_obj(
             {
-                "id": id,
+                "id": task_id,
                 "text": task_results["text"],
                 "valid": task_results["valid"],
             }
@@ -92,6 +92,7 @@ async def retrieve_validation(
 
     except Exception:
         logger.critical(
-            f"id: {id} msg: error during retrieval caused by exception -> {traceback.format_exc()}"
+            f"id: {task_id} msg: error during retrieval caused by exception -> "
+            f"{traceback.format_exc()}"
         )
         return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE)

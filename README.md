@@ -139,15 +139,15 @@ Please use 'make <target>', where <target> is one of
   format             run all code formatters (isort, black)
   format-isort       run python import for library sorting
   format-black       run python code formatter according PEP8
-  lint               run all linters (flake8, bandit, safety)
+  lint               run all linters (flake8, pylint, bandit, safety)
   lint-flake8        run linter to check coying style according PEP8
+  lint-pylint        run lint to check code quality
   lint-bandit        run linter to detect security issues in python code
   lint-safety        run linter to detect python dependency vulnerabilities
   test               run all tests (unitary, functional, integration)
   test-unitary       run unitary testing inside the container
   test-functional    run functional testing inside the container
   test-integration   run integration testing inside the container
-  start              build, clean and up docker containers
   build              build docker container images
   clean              remove docker containers and networks
   up                 start docker containers in detached mode
@@ -159,7 +159,7 @@ Most actions are configured in 'pyproject.toml'.
 
 
 
-<!-- USAGE EXAMPLES -->
+<!-- Usage -->
 ## Usage
 1. Create new validation request:
     ```sh
